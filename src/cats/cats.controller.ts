@@ -1,50 +1,70 @@
 import {
+    Body,
     Controller,
-    Delete,
+    //Delete,
     Get,
-    Patch,
+    //Patch,
     Post,
-    Put,
+    UseFilters,
+    //Put,
     UseInterceptors,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
 import { SuccessInterceptor } from 'src/interceptors/success.interceptor';
 import { CatsService } from './cats.service';
+import { ReadOnlyCatDto } from './dto/cat.dto';
+import { CatRequestDto } from './dto/cats.request.dto';
 
 @Controller('cats')
+@UseFilters(HttpExceptionFilter)
 @UseInterceptors(SuccessInterceptor)
 export class CatsController {
     //service 의존성 주입 , catscontroller라는 소비자가 catsService라는 제품을 주입받은 것
     constructor(private readonly catsService: CatsService) {}
 
-    // path : '/cats'
-    @Get()
-    getAllCat() {
-        return `all cats`;
-    }
+    // //path : '/cats/:id'
+    // @Get(':id')
+    // getOneCat() {
+    //     return 'one cat';
+    // }
 
-    //path : '/cats/:id'
-    @Get(':id')
-    getOneCat() {
+    @ApiOperation({ summary: '현재 고양이 가져오기' })
+    @Get()
+    getCurrentCat() {
         return 'one cat';
     }
 
+    @ApiResponse({
+        status: 500,
+        description: 'Server Error..',
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Success!',
+        type: ReadOnlyCatDto,
+    })
+    @ApiOperation({ summary: '회원가입' })
     @Post()
-    createCat() {
-        return 'create cat';
+    async signUp(@Body() body: CatRequestDto) {
+        return await this.catsService.signUp(body);
     }
 
-    @Put(':id')
-    updateCat() {
-        return 'update cat';
+    @ApiOperation({ summary: '로그임' })
+    @Post('login')
+    logIn() {
+        return 'log in';
     }
 
-    @Patch(':id')
-    updatePartialCat() {
-        return 'update partial cat';
+    @ApiOperation({ summary: '로그아웃' })
+    @Post('logout')
+    logOut() {
+        return 'log out';
     }
 
-    @Delete(':id')
-    deleteCat() {
-        return 'delete cat';
+    @ApiOperation({ summary: '고양이 이미지 업로드' })
+    @Post('upload/cats')
+    uploadCatImg() {
+        return 'uploadImg';
     }
 }

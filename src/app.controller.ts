@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Request } from 'express';
 
-@Controller('cats')
+@Controller()
 export class AppController {
     //의존성 주입 : appService를 사용하기 위해서
     //nest의 경우, appService를 파일 그대로 사용하지 않고 클래스 내에서 생성자로 초기화시켜서 사용함..
